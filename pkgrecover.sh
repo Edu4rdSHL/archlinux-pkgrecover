@@ -45,6 +45,8 @@ using_pacman_db() {
         done
     done
 
+    mapfile -t matching_packages < <(echo "${matching_packages[@]}" | tr ' ' '\n' | sort -u)
+
     # $2 is the dry-run flag, if set, just print the packages, else reinstall them piped to pacman
     if [[ $2 == "--dry-run" ]]; then
         echo "The following packages will be reinstalled:"
@@ -67,7 +69,19 @@ using_paclog() {
     check_date_format "$1"
 
     # Get the list of packages upgraded after the given date
-    mapfile -t matching_packages < <(paclog --after "$1" | grep -oE "upgraded (\S+)" | cut -d ' ' -f 2)
+    mapfile -t paclog_matching_packages < <(paclog --after "$1" | grep -oE "(upgraded|installed) (\S+)" | cut -d ' ' -f 2 | sort -u)
+    mapfile -t installed_packages < <(pacman -Qq)
+
+    matching_packages=()
+
+    # Find the common elements between the two arrays
+    for pkg in "${paclog_matching_packages[@]}"; do
+        for installed_pkg in "${installed_packages[@]}"; do
+            if [[ "$pkg" == "$installed_pkg" ]]; then
+                matching_packages+=("$pkg")
+            fi
+        done
+    done
 
     # $2 is the dry-run flag, if set, just print the packages, else reinstall them piped to pacman
     if [[ $2 == "--dry-run" ]]; then
