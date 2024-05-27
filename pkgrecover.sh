@@ -84,8 +84,8 @@ using_paclog() {
 usage() {
     echo "Usage: $0 [OPTIONS]"
     echo "Options:"
-    echo "  --pacman-db \"<date>\" [--dry-run]  Reinstall packages upgraded after the given date using pacman database. Please quote the date."
-    echo "  --paclog \"<date>\" [--dry-run]     Reinstall packages upgraded after the given date using pacman log. Please quote the date."
+    echo "  --pacman-db \"<date>\" [--dry-run]  Reinstall packages upgraded after the given date using pacman database. Please quote the date in the format 'YYYY-MM-DD HH:MM:SS'"
+    echo "  --paclog \"<date>\" [--dry-run]     Reinstall packages upgraded after the given date using pacman log. Please quote the date in the format 'YYYY-MM-DD HH:MM:SS'"
     exit 1
 }
 
