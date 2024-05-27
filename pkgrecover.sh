@@ -39,7 +39,7 @@ using_pacman_db() {
     # Find the common elements between the two arrays
     for dir in "${modified_db_dirs[@]}"; do
         for pkg in "${installed_packages[@]}"; do
-            if [[ "$dir" == $pkg* ]]; then
+            if [[ "$dir" == $pkg-* ]]; then
                 matching_packages+=("$pkg")
             fi
         done
