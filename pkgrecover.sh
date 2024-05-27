@@ -70,21 +70,25 @@ using_paclog() {
 
     # Get the list of packages upgraded after the given date
     mapfile -t paclog_matching_packages < <(paclog --after "$1" | grep -oE "(upgraded|installed) (\S+)" | cut -d ' ' -f 2 | sort -u)
-    mapfile -t installed_packages < <(pacman -Qq)
 
     matching_packages=()
 
-    # Find the common elements between the two arrays
-    for pkg in "${paclog_matching_packages[@]}"; do
-        for installed_pkg in "${installed_packages[@]}"; do
-            if [[ "$pkg" == "$installed_pkg" ]]; then
-                matching_packages+=("$pkg")
-            fi
+    if [[ $2 == "--no-db" ]] || [[ $3 == "--no-db" ]]; then
+        matching_packages=("${paclog_matching_packages[@]}")
+    else
+        mapfile -t installed_packages < <(pacman -Qq)
+        # Find the common elements between the two arrays
+        for pkg in "${paclog_matching_packages[@]}"; do
+            for installed_pkg in "${installed_packages[@]}"; do
+                if [[ "$pkg" == "$installed_pkg" ]]; then
+                    matching_packages+=("$pkg")
+                fi
+            done
         done
-    done
+    fi
 
     # $2 is the dry-run flag, if set, just print the packages, else reinstall them piped to pacman
-    if [[ $2 == "--dry-run" ]]; then
+    if [[ $3 == "--dry-run" ]] || [[ $2 == "--dry-run" ]]; then
         echo "The following packages will be reinstalled:"
         for pkg in "${matching_packages[@]}"; do
             echo "$pkg"
@@ -99,7 +103,7 @@ usage() {
     echo "Usage: $0 [OPTIONS]"
     echo "Options:"
     echo "  --pacman-db \"<date>\" [--dry-run]  Reinstall packages upgraded after the given date using pacman database. Please quote the date in the format 'YYYY-MM-DD HH:MM:SS'"
-    echo "  --paclog \"<date>\" [--dry-run]     Reinstall packages upgraded after the given date using pacman log. Please quote the date in the format 'YYYY-MM-DD HH:MM:SS'"
+    echo "  --paclog \"<date>\" [--no-db] [--dry-run]     Reinstall packages upgraded after the given date using pacman log. Please quote the date in the format 'YYYY-MM-DD HH:MM:SS'"
     exit 1
 }
 
@@ -113,12 +117,12 @@ while [[ $# -gt 0 ]]; do
     --pacman-db)
         check_dependencies
         using_pacman_db "$2" "$3"
-        shift 3
+        exit 0
         ;;
     --paclog)
         check_dependencies
-        using_paclog "$2" "$3"
-        shift 3
+        using_paclog "$2" "$3" "$4"
+        exit 0
         ;;
     *)
         usage
