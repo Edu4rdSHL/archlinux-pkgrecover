@@ -10,8 +10,18 @@ This script is intended to be used when your ArchLinux system crashes during a s
 
 The script have two modes of operation:
 
-1. **Using the pacman log file**: The script will look for the pacman log file and will extract the list of packages that were installed after the specified date using paclog from `pacutils`. This option is activated using the `--paclog` option.
+1. **Using the pacman log file**: The script will look for the pacman log file and will extract the list of packages that were installed after the specified date using paclog from `pacutils`, and then compare that to `pacman -Qq` to make sure it's installing only packages that were present at the moment of the crash. In case that your pacman database is not working, just pass the `--no-db` flag. This option is activated using the `--paclog` option.
 2. **Using the package database**: If the pacman log file is not available, is corrupted, or you don't have `pacutils` installed, the script can look for the package database and will extract the list of packages that were installed after the specified date. This option is activated using the `--pacman-db` option.
+
+## Considerations
+
+- The script tries to be as safe and accurate as possible, but it's always a good idea to check the list of packages that will be reinstalled using the `--dry-run` option.
+- When using the `--paclog` option among with the `--no-db` flag, the script will reinstall **all** packages that were installed/upgraded after the specified date. This means that packages that were removed after the specified date will be reinstalled. It's because the script doesn't know if any package was removed after the specified date because it doesn't have access to the pacman database for checking the current state of the system.
+
+# Dependencies
+
+- `pacutils` (optional): Required if you want to use the `--paclog` option. You can install it from the official repositories.
+- `pacman` (required): Required for the script to work. It's installed by default on ArchLinux systems. In case that your pacman got corrupted, you can use the [pacman-static](https://aur.archlinux.org/packages/pacman-static/) package from the AUR.
 
 # Usage
 
@@ -22,8 +32,41 @@ The script have two modes of operation:
 3. Run the script with the date of the last successful upgrade as an argument. For example, if the last successful upgrade was on the 27th of May 2024, you would run the script as follows:
 ```bash
 # Check first what packages will be reinstalled using the --dry-run option
-archlinux-pkgrecover.sh --pacman-db/--paclog "2024-05-27" --dry-run
+archlinux-pkgrecover.sh --pacman-db/--paclog "2024-05-27" [--no-db] --dry-run
 
 # If you are happy with the list of packages that will be reinstalled
-archlinux-pkgrecover.sh --pacman-db/--paclog "2024-05-27"
+archlinux-pkgrecover.sh --pacman-db/--paclog "2024-05-27" [--no-db]
 ```
+
+# Examples
+
+1. Using the pacman log file among with the pacman database:
+```bash
+# Check first what packages will be reinstalled using the --dry-run option
+archlinux-pkgrecover.sh --paclog "2024-05-27" --dry-run
+
+# If you are happy with the list of packages that will be reinstalled
+archlinux-pkgrecover.sh --paclog "2024-05-27"
+```
+
+2. Using the pacman log file without the pacman database:
+```bash
+# Check first what packages will be reinstalled using the --dry-run option
+archlinux-pkgrecover.sh --paclog "2024-05-27" --no-db --dry-run
+
+# If you are happy with the list of packages that will be reinstalled
+archlinux-pkgrecover.sh --paclog "2024-05-27" --no-db
+```
+
+3. Using the package database:
+```bash
+# Check first what packages will be reinstalled using the --dry-run option
+archlinux-pkgrecover.sh --pacman-db "2024-05-27" --dry-run
+
+# If you are happy with the list of packages that will be reinstalled
+archlinux-pkgrecover.sh --pacman-db "2024-05-27"
+```
+
+# License
+
+This script is licensed under the MIT license. See the [LICENSE](LICENSE) file for more information.
