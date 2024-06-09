@@ -55,7 +55,7 @@ using_pacman_db() {
         done
     else
         echo "Reinstalling the following packages:"
-        sudo pacman -S "${matching_packages[@]}" --noconfirm
+        sudo pacman -S "${matching_packages[@]}" --overwrite='*'
     fi
 }
 
@@ -95,7 +95,7 @@ using_paclog() {
         done
     else
         echo "Reinstalling the following packages:"
-        sudo pacman -S "${matching_packages[@]}" --noconfirm
+        sudo pacman -S "${matching_packages[@]}" --overwrite='*'
     fi
 }
 
