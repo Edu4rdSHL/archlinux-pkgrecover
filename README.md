@@ -2,7 +2,7 @@
 Recover your ArchLinux installation after a mid-upgrade crash
 
 # Purpose
-This script is intended to be used when your ArchLinux system crashes during a system upgrade, leaving your system in an inconsistent state. The script will attempt to recover your system by reinstalling all packages that were installed before the crash. Here, before the crash means the date that **you** specify.
+This script is intended to be used when your ArchLinux system crashes, poer outages, etc, during a system upgrade, leaving your system in an inconsistent state. The script will attempt to recover your system by reinstalling all packages that were installed before the crash. Here, before the crash means the date that **you** specify.
 
 **Note:** You don't need a very specific date, just a date that is close to the date of the crash. The script will then look for all packages that were installed after that date and will reinstall them.
 
