@@ -1,14 +1,45 @@
 #!/usr/bin/bash
 
+USE_PACMAN_STATIC=${USE_PACMAN_STATIC:-"false"}
+
+install_pacman_static() {
+    if [[ ! -f /tmp/pacman-static.installed ]]; then
+        echo "Downloading and installing pacman-static. In case that curl fails, you can download the binary from:"
+        echo "https://pkgbuild.com/~morganamilo/pacman-static/x86_64/bin/pacman-static"
+        echo "and then move it to /usr/bin/pacman"
+
+        mv /usr/bin/pacman /usr/bin/pacman.bak
+        curl -Lo /usr/bin/pacman https://pkgbuild.com/~morganamilo/pacman-static/x86_64/bin/pacman-static
+        chmod +x /usr/bin/pacman
+        touch /tmp/pacman-static.installed
+    fi
+}
+
 check_dependencies() {
+    if [[ $USE_PACMAN_STATIC == "true" ]]; then
+        install_pacman_static
+    fi
+
     if ! command -v pacman &>/dev/null; then
         echo "pacman is not installed."
         exit 1
     fi
 
-    if ! command -v paclog &>/dev/null; then
+    if [[ "$1" == "paclog" ]] && ! command -v paclog &>/dev/null; then
         echo "paclog is not installed."
         exit 1
+    fi
+}
+
+cleanup() {
+    echo "Cleanup..."
+
+    if [[ -f /usr/bin/pacman.bak ]]; then
+        mv /usr/bin/pacman.bak /usr/bin/pacman
+    fi
+
+    if [[ -f /tmp/pacman-static.installed ]]; then
+        rm /tmp/pacman-static.installed
     fi
 }
 
@@ -57,6 +88,8 @@ using_pacman_db() {
         echo "Reinstalling the following packages:"
         sudo pacman -S "${matching_packages[@]}" --overwrite='*'
     fi
+
+    cleanup
 }
 
 using_paclog() {
@@ -97,10 +130,14 @@ using_paclog() {
         echo "Reinstalling the following packages:"
         sudo pacman -S "${matching_packages[@]}" --overwrite='*'
     fi
+
+    cleanup
 }
 
 usage() {
-    echo "Usage: $0 [OPTIONS]"
+    echo "Usage: [ENVIRONMENT] $0 [OPTIONS]"
+    echo "ENVIRONMENT:"
+    echo "  USE_PACMAN_STATIC=true $0 [OPTIONS]  Use pacman-static instead of the default pacman. Useful in cases that pacman is broken. Default is false."
     echo "Options:"
     echo "  --pacman-db \"<date>\" [--dry-run]  Reinstall packages upgraded after the given date using pacman database. Please quote the date in the format 'YYYY-MM-DD HH:MM:SS'"
     echo "  --paclog \"<date>\" [--no-db] [--dry-run]     Reinstall packages upgraded after the given date using pacman log. Please quote the date in the format 'YYYY-MM-DD HH:MM:SS'"
@@ -109,6 +146,12 @@ usage() {
 
 if [[ $# -eq 0 ]]; then
     usage
+fi
+
+# Check that we are running as root
+if [[ $EUID -ne 0 ]]; then
+    echo "This script must be run as root."
+    exit 1
 fi
 
 # Parse the command line arguments
@@ -120,7 +163,7 @@ while [[ $# -gt 0 ]]; do
         exit 0
         ;;
     --paclog)
-        check_dependencies
+        check_dependencies "paclog"
         using_paclog "$2" "$3" "$4"
         exit 0
         ;;
