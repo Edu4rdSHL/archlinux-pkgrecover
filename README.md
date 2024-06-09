@@ -27,6 +27,8 @@ The script have two modes of operation:
 
 **Important:** Quote the date argument if it contains spaces or special characters.
 
+**Tip:** If your local pacman installation is broken, use the `USE_PACMAN_STATIC=true` environment variable when launching the script.
+
 1. Get a shell on your system. You can use a live CD + a chroot environment (recommended) or simply a shell on the crashed system.
 2. Download the script.
 3. Run the script with the date of the last successful upgrade as an argument. For example, if the last successful upgrade was on the 27th of May 2024, you would run the script as follows:
