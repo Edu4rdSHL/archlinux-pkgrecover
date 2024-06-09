@@ -1,5 +1,6 @@
 #!/usr/bin/bash
 
+VERSION="1.0.0"
 USE_PACMAN_STATIC=${USE_PACMAN_STATIC:-"false"}
 
 install_pacman_static() {
@@ -26,7 +27,7 @@ check_dependencies() {
     fi
 
     if [[ "$1" == "paclog" ]] && ! command -v paclog &>/dev/null; then
-        echo "paclog is not installed."
+        echo "paclog is not installed. Use the --pacman-db option instead or install the pacutils package."
         exit 1
     fi
 }
@@ -135,16 +136,18 @@ using_paclog() {
 }
 
 usage() {
+    echo "$0 v$VERSION"
     echo "Usage: [ENVIRONMENT] $0 [OPTIONS]"
     echo "ENVIRONMENT:"
-    echo "  USE_PACMAN_STATIC=true $0 [OPTIONS]  Use pacman-static instead of the default pacman. Useful in cases that pacman is broken. Default is false."
+    echo "USE_PACMAN_STATIC=true $0 [OPTIONS]  Use pacman-static instead of the default pacman. Useful in cases that pacman is broken. Default is false."
     echo "Options:"
     echo "  --pacman-db \"<date>\" [--dry-run]  Reinstall packages upgraded after the given date using pacman database. Please quote the date in the format 'YYYY-MM-DD HH:MM:SS'"
     echo "  --paclog \"<date>\" [--no-db] [--dry-run]     Reinstall packages upgraded after the given date using pacman log. Please quote the date in the format 'YYYY-MM-DD HH:MM:SS'"
     exit 1
 }
 
-if [[ $# -eq 0 ]]; then
+# Check that we have at least 2 arguments
+if [[ $# -le 1 ]]; then
     usage
 fi
 
