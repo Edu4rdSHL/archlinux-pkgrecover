@@ -1,5 +1,5 @@
 # archlinux-pkgrecover
-Recover your ArchLinux installation after a mid-upgrade crash
+Recover your ArchLinux installation after a mid-upgrade crash, power loss, etc.
 
 # Purpose
 This script is intended to be used when your ArchLinux system crashed, a power outage happens, etc, during a system upgrade, leaving your system in an inconsistent state. The script will attempt to recover your system by reinstalling all packages that were installed before the crash. Here, before the crash means the date that **you** specify.
