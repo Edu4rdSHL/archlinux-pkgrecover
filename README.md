@@ -21,7 +21,7 @@ The script have two modes of operation:
 # Dependencies
 
 - `pacutils` (optional): Required if you want to use the `--paclog` option. You can install it from the official repositories.
-- `pacman` (required): Required for the script to work. It's installed by default on ArchLinux systems. In case that your pacman got corrupted, you can use the [pacman-static](https://aur.archlinux.org/packages/pacman-static/) package from the AUR.
+- `pacman` (required): Required for the script to work. It's installed by default on ArchLinux systems. In case that your pacman got corrupted, you can use the [pacman-static](https://aur.archlinux.org/packages/pacman-static/) package from the AUR by installing it manually or simply setting the `USE_PACMAN_STATIC=true` environment variable when launching the script.
 
 # Usage
 
