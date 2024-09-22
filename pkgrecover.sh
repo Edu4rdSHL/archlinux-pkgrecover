@@ -3,7 +3,24 @@
 VERSION="1.0.0"
 USE_PACMAN_STATIC=${USE_PACMAN_STATIC:-"false"}
 
+directory_check() {
+    RED='\033[0;31m'
+    #checks to make sure that all the important directories are mounted properly
+    if [[ ! -d /proc]]; then
+        echo -e "${RED} ERROR: /proc is not mounted. upgrading without /proc mounted can cause damage."
+        exit 1
+    fi
+    
+    if [[ ! -d /sys]]; then
+        echo -e "${RED} ERROR: /sys is not mounted. upgrading without /sys mounted can cause damage."
+        exit 1
+    fi
 
+    if [[ ! -d /boot]]; then
+        echo -e "${RED} ERROR: /boot is not mounted. upgrading without /boot mounted can cause damage."
+        exit 1
+    fi
+}
 install_pacman_static() {
     if [[ ! -f /tmp/pacman-static.installed ]]; then
         echo "Downloading and installing pacman-static. In case that curl fails, you can download the binary from:"
