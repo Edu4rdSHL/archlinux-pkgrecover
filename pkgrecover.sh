@@ -3,6 +3,7 @@
 VERSION="1.0.0"
 USE_PACMAN_STATIC=${USE_PACMAN_STATIC:-"false"}
 
+
 install_pacman_static() {
     if [[ ! -f /tmp/pacman-static.installed ]]; then
         echo "Downloading and installing pacman-static. In case that curl fails, you can download the binary from:"
@@ -87,7 +88,7 @@ using_pacman_db() {
         done
     else
         echo "Reinstalling the following packages:"
-        sudo pacman -S "${matching_packages[@]}" --overwrite='*'
+        pacman -S "${matching_packages[@]}" --overwrite='*'
     fi
 
     cleanup
@@ -129,7 +130,7 @@ using_paclog() {
         done
     else
         echo "Reinstalling the following packages:"
-        sudo pacman -S "${matching_packages[@]}" --overwrite='*'
+        pacman -S "${matching_packages[@]}" --overwrite='*'
     fi
 
     cleanup
@@ -153,8 +154,7 @@ fi
 
 # Check that we are running as root
 if [[ $EUID -ne 0 ]]; then
-    echo "This script must be run as root."
-    exit 1
+    echo "WARNING: This script must be run as root in order to install pacman packages. You can still use dryrun without root."
 fi
 
 # Parse the command line arguments
