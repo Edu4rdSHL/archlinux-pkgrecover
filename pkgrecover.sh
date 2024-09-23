@@ -2,9 +2,10 @@
 
 VERSION="1.0.0"
 USE_PACMAN_STATIC=${USE_PACMAN_STATIC:-"false"}
+RED='\033[0;31m'
+YELLOW='\033[1;33m'
 
 directory_check() {
-    RED='\033[0;31m'
     #checks to make sure that all the important directories are mounted properly
     if [[ ! -d /proc]]; then
         echo -e "${RED} ERROR: /proc is not mounted. upgrading without /proc mounted can cause damage."
@@ -171,7 +172,12 @@ fi
 
 # Check that we are running as root
 if [[ $EUID -ne 0 ]]; then
-    echo "WARNING: This script must be run as root in order to install pacman packages. You can still use dryrun without root."
+    if [[ $3 == "--dry-run" ]] || [[ $2 == "--dry-run" ]]; then
+        echo -e "${YELLOW}WARNING: This script must be run as root in order to install pacman packages. You can still use dryrun without root."
+    else
+        echo -e "${RED}ERROR: This script must be run as root in order to install pacman packages."
+        exit 1
+    fi
 fi
 
 # Parse the command line arguments
