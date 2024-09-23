@@ -22,6 +22,7 @@ directory_check() {
         exit 1
     fi
 }
+
 install_pacman_static() {
     if [[ ! -f /tmp/pacman-static.installed ]]; then
         echo "Downloading and installing pacman-static. In case that curl fails, you can download the binary from:"
@@ -49,6 +50,8 @@ check_dependencies() {
         echo "paclog is not installed. Use the --pacman-db option instead or install the pacutils package."
         exit 1
     fi
+
+    directory_check
 }
 
 cleanup() {
