@@ -2,7 +2,26 @@
 
 VERSION="1.0.0"
 USE_PACMAN_STATIC=${USE_PACMAN_STATIC:-"false"}
+RED='\033[0;31m'
+YELLOW='\033[1;33m'
 
+directory_check() {
+    #checks to make sure that all the important directories are mounted properly
+    if [[ ! -d /proc]]; then
+        echo -e "${RED} ERROR: /proc is not mounted. upgrading without /proc mounted can cause damage."
+        exit 1
+    fi
+    
+    if [[ ! -d /sys]]; then
+        echo -e "${RED} ERROR: /sys is not mounted. upgrading without /sys mounted can cause damage."
+        exit 1
+    fi
+
+    if [[ ! -d /boot]]; then
+        echo -e "${RED} ERROR: /boot is not mounted. upgrading without /boot mounted can cause damage."
+        exit 1
+    fi
+}
 install_pacman_static() {
     if [[ ! -f /tmp/pacman-static.installed ]]; then
         echo "Downloading and installing pacman-static. In case that curl fails, you can download the binary from:"
@@ -87,7 +106,7 @@ using_pacman_db() {
         done
     else
         echo "Reinstalling the following packages:"
-        sudo pacman -S "${matching_packages[@]}" --overwrite='*'
+        pacman -S "${matching_packages[@]}" --overwrite='*'
     fi
 
     cleanup
@@ -129,7 +148,7 @@ using_paclog() {
         done
     else
         echo "Reinstalling the following packages:"
-        sudo pacman -S "${matching_packages[@]}" --overwrite='*'
+        pacman -S "${matching_packages[@]}" --overwrite='*'
     fi
 
     cleanup
@@ -153,8 +172,12 @@ fi
 
 # Check that we are running as root
 if [[ $EUID -ne 0 ]]; then
-    echo "This script must be run as root."
-    exit 1
+    if [[ $3 == "--dry-run" ]] || [[ $2 == "--dry-run" ]]; then
+        echo -e "${YELLOW}WARNING: This script must be run as root in order to install pacman packages. Proceeding because it's a dry-run operation."
+    else
+        echo -e "${RED}ERROR: This script must be run as root in order to install pacman packages."
+        exit 1
+    fi
 fi
 
 # Parse the command line arguments
