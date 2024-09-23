@@ -173,7 +173,7 @@ fi
 # Check that we are running as root
 if [[ $EUID -ne 0 ]]; then
     if [[ $3 == "--dry-run" ]] || [[ $2 == "--dry-run" ]]; then
-        echo -e "${YELLOW}WARNING: This script must be run as root in order to install pacman packages. You can still use dryrun without root."
+        echo -e "${YELLOW}WARNING: This script must be run as root in order to install pacman packages. Proceeding because it's a dry-run operation."
     else
         echo -e "${RED}ERROR: This script must be run as root in order to install pacman packages."
         exit 1
