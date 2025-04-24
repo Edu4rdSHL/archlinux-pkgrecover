@@ -34,10 +34,10 @@ The script have two modes of operation:
 3. Run the script with the date of the last successful upgrade as an argument. For example, if the last successful upgrade was on the 27th of May 2024, you would run the script as follows:
 ```bash
 # Check first what packages will be reinstalled using the --dry-run option
-archlinux-pkgrecover.sh --pacman-db/--paclog "2024-05-27" [--no-db] --dry-run
+./pkgrecover.sh --pacman-db/--paclog "2024-05-27" [--no-db] --dry-run
 
 # If you are happy with the list of packages that will be reinstalled
-archlinux-pkgrecover.sh --pacman-db/--paclog "2024-05-27" [--no-db]
+./pkgrecover.sh --pacman-db/--paclog "2024-05-27" [--no-db]
 ```
 
 # Examples
@@ -45,28 +45,28 @@ archlinux-pkgrecover.sh --pacman-db/--paclog "2024-05-27" [--no-db]
 1. Using the pacman log file among with the pacman database:
 ```bash
 # Check first what packages will be reinstalled using the --dry-run option
-archlinux-pkgrecover.sh --paclog "2024-05-27" --dry-run
+./pkgrecover.sh --paclog "2024-05-27" --dry-run
 
 # If you are happy with the list of packages that will be reinstalled
-archlinux-pkgrecover.sh --paclog "2024-05-27"
+./pkgrecover.sh --paclog "2024-05-27"
 ```
 
 2. Using the pacman log file without the pacman database:
 ```bash
 # Check first what packages will be reinstalled using the --dry-run option
-archlinux-pkgrecover.sh --paclog "2024-05-27" --no-db --dry-run
+./pkgrecover.sh --paclog "2024-05-27" --no-db --dry-run
 
 # If you are happy with the list of packages that will be reinstalled
-archlinux-pkgrecover.sh --paclog "2024-05-27" --no-db
+./pkgrecover.sh --paclog "2024-05-27" --no-db
 ```
 
 3. Using the package database:
 ```bash
 # Check first what packages will be reinstalled using the --dry-run option
-archlinux-pkgrecover.sh --pacman-db "2024-05-27" --dry-run
+./pkgrecover.sh --pacman-db "2024-05-27" --dry-run
 
 # If you are happy with the list of packages that will be reinstalled
-archlinux-pkgrecover.sh --pacman-db "2024-05-27"
+./pkgrecover.sh --pacman-db "2024-05-27"
 ```
 
 # License

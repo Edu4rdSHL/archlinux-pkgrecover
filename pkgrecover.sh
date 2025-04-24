@@ -7,17 +7,17 @@ YELLOW='\033[1;33m'
 
 directory_check() {
     #checks to make sure that all the important directories are mounted properly
-    if [[ ! -d /proc]]; then
+    if [[ ! -d /proc ]]; then
         echo -e "${RED} ERROR: /proc is not mounted. upgrading without /proc mounted can cause damage."
         exit 1
     fi
-    
-    if [[ ! -d /sys]]; then
+
+    if [[ ! -d /sys ]]; then
         echo -e "${RED} ERROR: /sys is not mounted. upgrading without /sys mounted can cause damage."
         exit 1
     fi
 
-    if [[ ! -d /boot]]; then
+    if [[ ! -d /boot ]]; then
         echo -e "${RED} ERROR: /boot is not mounted. upgrading without /boot mounted can cause damage."
         exit 1
     fi
